@@ -10,12 +10,12 @@ public class SudokuSolver {
     public static ArrayList<Cell> board;
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String[] args) {
+    public ArrayList<String> sudokuSolver(String input) {
 	    SudokuSolver solver = new SudokuSolver();
         board = solver.createBoard();
 
         //parse user input
-        String input = solver.parseInput();
+        //String input = solver.parseInput();
         solver.addValues(input);
 
         //add suggestions to unknown cells
@@ -38,7 +38,7 @@ public class SudokuSolver {
             //System.out.println(board);
         }
 
-        solver.printOut();
+        return solver.printOut();
 
 
 
@@ -269,12 +269,15 @@ public class SudokuSolver {
         return solve;
     }
 
-    public void printOut (){
+    public ArrayList<String> printOut (){
+        ArrayList<String> output = new ArrayList<String>();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 System.out.print(board.get(2 * i + j).getContains());
+                output.add("" + board.get(2 * i + j).getContains());
             }
             System.out.println();
         }
+        return output;
     }
 }
