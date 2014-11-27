@@ -62,14 +62,14 @@ public class StartSolver {
         frame.getContentPane().add(background);
 
         GridLayout grid = new GridLayout(9,9);
-        grid.setVgap(1);
-        grid.setHgap(2);
+        grid.setVgap(2);
+        grid.setHgap(4);
         mainPanel = new JPanel(grid);
         background.add(BorderLayout.CENTER, mainPanel);
 
         for (int i = 0; i < 81; i++) {
             JTextField c = new JTextField("");
-            c.setColumns(3);
+            c.setColumns(1);
             values.add(c);
             mainPanel.add(c);
         } // end loop

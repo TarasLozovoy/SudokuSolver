@@ -269,15 +269,33 @@ public class SudokuSolver {
         return solve;
     }
 
-    public ArrayList<String> printOut (){
+//    public ArrayList<String> printOut(){
+//        ArrayList<String> output = new ArrayList<String>();
+//        for (int i = 0; i < 9; i++) {
+//            for (int j = 0; j < 9; j++) {
+//                System.out.print(board.get(2 * i + j).getContains());
+//                output.add("" + board.get(2 * i + j).getContains());
+//            }
+//            System.out.println();
+//        }
+//        return output;
+//    }
+
+    public ArrayList<String> printOut(){
+        String out = "";
         ArrayList<String> output = new ArrayList<String>();
         for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                System.out.print(board.get(2 * i + j).getContains());
-                output.add("" + board.get(2 * i + j).getContains());
+            for (int k = 0; k < 9; k++) {
+                for (Cell j : board) {
+                    if (j.getRow() == i && j.getColumn() == k) {
+                        out = out + j.getContains();
+                        output.add("" + j.getContains());
+                    }
+                }
             }
-            System.out.println();
+            out = out + "\n";
         }
+        System.out.println(out);
         return output;
     }
 }
