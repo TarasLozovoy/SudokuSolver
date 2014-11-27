@@ -111,10 +111,12 @@ public class SudokuSolver {
             if (cell.getRow() == row) {
                 if (cellContent != 0) {
                     for (Cell cellToUpdate : board){
-                        if (cellToUpdate.getRow() == row && cellToUpdate.getCanContain().contains("" + cellContent)){
-                            ArrayList<String> updated = cellToUpdate.getCanContain();
-                            updated.remove(updated.indexOf("" + cellContent));
-                            cellToUpdate.setCanContain(updated);
+                        if (cellToUpdate.getContains() == 0) {
+                            if (cellToUpdate.getRow() == row && cellToUpdate.getCanContain().contains("" + cellContent)) {
+                                ArrayList<String> updated = cellToUpdate.getCanContain();
+                                updated.remove(updated.indexOf("" + cellContent));
+                                cellToUpdate.setCanContain(updated);
+                            }
                         }
                     }
                 }
@@ -129,10 +131,12 @@ public class SudokuSolver {
             if (cell.getColumn() == column) {
                 if (cellContent != 0) {
                     for (Cell cellToUpdate : board){
-                        if (cellToUpdate.getColumn() == column && cellToUpdate.getCanContain().contains("" + cellContent)){
-                            ArrayList<String> updated = cellToUpdate.getCanContain();
-                            updated.remove(updated.indexOf("" + cellContent));
-                            cellToUpdate.setCanContain(updated);
+                        if (cellToUpdate.getContains() == 0) {
+                            if (cellToUpdate.getColumn() == column && cellToUpdate.getCanContain().contains("" + cellContent)) {
+                                ArrayList<String> updated = cellToUpdate.getCanContain();
+                                updated.remove(updated.indexOf("" + cellContent));
+                                cellToUpdate.setCanContain(updated);
+                            }
                         }
                     }
                 }
@@ -148,10 +152,12 @@ public class SudokuSolver {
             if (cell.getSquare() == square) {
                 if (cellContent != 0) {
                     for (Cell cellToUpdate : board){
-                        if (cellToUpdate.getSquare() == square && cellToUpdate.getCanContain().contains("" + cellContent)){
-                            ArrayList<String> updated = cellToUpdate.getCanContain();
-                            updated.remove(updated.indexOf("" + cellContent));
-                            cellToUpdate.setCanContain(updated);
+                        if (cellToUpdate.getContains() == 0) {
+                            if (cellToUpdate.getSquare() == square && cellToUpdate.getCanContain().contains("" + cellContent)) {
+                                ArrayList<String> updated = cellToUpdate.getCanContain();
+                                updated.remove(updated.indexOf("" + cellContent));
+                                cellToUpdate.setCanContain(updated);
+                            }
                         }
                     }
                 }
@@ -270,11 +276,19 @@ public class SudokuSolver {
     }
 
     public void printOut (){
+        String out = "";
         for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
-                System.out.print(board.get(2 * i + j).getContains());
+            for (int k = 0; k < 9; k++) {
+
+                for (Cell j : board) {
+                    if (j.getRow() == i && j.getColumn() == k) {
+                        out = out + j.getContains();
+                    }
+                }
             }
-            System.out.println();
+            out = out + "\n";
+
         }
+        System.out.println(out);
     }
 }
