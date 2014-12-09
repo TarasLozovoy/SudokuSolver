@@ -8,11 +8,15 @@ import java.util.Arrays;
 
 public class SudokuSolver {
     public static ArrayList<Cell> board;
+    public static ArrayList<ArrayList<Cell>> rows = new ArrayList<ArrayList<Cell>>();
+    public static ArrayList<ArrayList<Cell>> columns= new ArrayList<ArrayList<Cell>>();
+    public static ArrayList<ArrayList<Cell>> squares= new ArrayList<ArrayList<Cell>>();
     BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
     public static void main(String[] args) {
 	    SudokuSolver solver = new SudokuSolver();
         board = solver.createBoard();
+        solver.classifyBoardContent();
 
         //parse user input
         String input = solver.parseInput();
@@ -21,34 +25,21 @@ public class SudokuSolver {
         //add suggestions to unknown cells
         solver.createBasicSuggestions();
 
+        int counter = 0;
         while (solver.isSolved()) {
-            for (int i = 0; i < 9; i++) {
-                solver.checkRow(i);
-                solver.checkOneInARow(i);
-            }
-            for (int i = 0; i < 9; i++) {
-                solver.checkColumn(i);
-                solver.checkOneInAColumn(i);
-            }
-            for (int i = 0; i < 9; i++) {
-                solver.checkSquare(i);
-                solver.checkOneInASquare(i);
-            }
+            solver.loopedCheck(1);
             solver.updateContent();
+            counter++;
             //System.out.println(board);
+
+            if (counter == 50){
+                while (solver.isSolved()){
+                    solver.alternativesCheck();
+                }
+            }
         }
 
         solver.printOut();
-
-
-
-        //debug printout
-        //System.out.println(board);
-
-
-
-
-
     }
 
     public ArrayList<Cell> createBoard(){
@@ -70,6 +61,26 @@ public class SudokuSolver {
             }
         }
         return board;
+    }
+
+    public void classifyBoardContent(){
+        for (int i = 0; i < 9; i++) {
+            rows.add(new ArrayList<Cell>());
+            columns.add(new ArrayList<Cell>());
+            squares.add(new ArrayList<Cell>());
+
+            for (Cell cell : board){
+                if (cell.getRow() == i){
+                    rows.get(i).add(cell);
+                }
+                if (cell.getColumn() == i){
+                    columns.get(i).add(cell);
+                }
+                if (cell.getSquare() == i){
+                    squares.get(i).add(cell);
+                }
+            }
+        }
     }
 
     public String parseInput(){
@@ -104,64 +115,51 @@ public class SudokuSolver {
         }
     }
 
-    public void checkRow(int row){
-        for (int i = 0; i < 81; i++) {
-            Cell cell = board.get(i);
-            int  cellContent = cell.getContains();
-            if (cell.getRow() == row) {
-                if (cellContent != 0) {
-                    for (Cell cellToUpdate : board){
-                        if (cellToUpdate.getContains() == 0) {
-                            if (cellToUpdate.getRow() == row && cellToUpdate.getCanContain().contains("" + cellContent)) {
-                                ArrayList<String> updated = cellToUpdate.getCanContain();
-                                updated.remove(updated.indexOf("" + cellContent));
-                                cellToUpdate.setCanContain(updated);
-                            }
+    public void checkBoard() {
+        for (int i = 0; i < 9; i++) {
+            for (Cell cell : rows.get(i)) {
+                if (cell.getContains() != 0){
+                    for (Cell cellToUpdate : rows.get(i)){
+                        if (    cellToUpdate.getContains() == 0 &&
+                                cellToUpdate.getCanContain().contains("" + cell.getContains())){
+                            cellToUpdate.getCanContain().remove("" + cell.getContains());
                         }
                     }
                 }
             }
+            for (Cell cell : columns.get(i)) {
+                if (cell.getContains() != 0){
+                    for (Cell cellToUpdate : columns.get(i)){
+                        if (    cellToUpdate.getContains() == 0 &&
+                                cellToUpdate.getCanContain().contains("" + cell.getContains())){
+                            cellToUpdate.getCanContain().remove("" + cell.getContains());
+                        }
+                    }
+                }
+            }
+            for (Cell cell : squares.get(i)) {
+                if (cell.getContains() != 0){
+                    for (Cell cellToUpdate : squares.get(i)){
+                        if (    cellToUpdate.getContains() == 0 &&
+                                cellToUpdate.getCanContain().contains("" + cell.getContains())){
+                            cellToUpdate.getCanContain().remove("" + cell.getContains());
+                        }
+                    }
+                }
+            }
+
         }
     }
 
-    public void checkColumn(int column){
-        for (int i = 0; i < 81; i++) {
-            Cell cell = board.get(i);
-            int  cellContent = cell.getContains();
-            if (cell.getColumn() == column) {
-                if (cellContent != 0) {
-                    for (Cell cellToUpdate : board){
-                        if (cellToUpdate.getContains() == 0) {
-                            if (cellToUpdate.getColumn() == column && cellToUpdate.getCanContain().contains("" + cellContent)) {
-                                ArrayList<String> updated = cellToUpdate.getCanContain();
-                                updated.remove(updated.indexOf("" + cellContent));
-                                cellToUpdate.setCanContain(updated);
-                            }
-                        }
-                    }
-                }
+    public void loopedCheck(int number){
+        for(int i = 0; i < number; i++){
+            checkBoard();
+            for (int j = 0; j < 9; j++) {
+                checkOneInARow(j);
+                checkOneInAColumn(j);
+                checkOneInASquare(j);
             }
-        }
-    }
-
-
-    public void checkSquare(int square){
-        for (int i = 0; i < 81; i++) {
-            Cell cell = board.get(i);
-            int  cellContent = cell.getContains();
-            if (cell.getSquare() == square) {
-                if (cellContent != 0) {
-                    for (Cell cellToUpdate : board){
-                        if (cellToUpdate.getContains() == 0) {
-                            if (cellToUpdate.getSquare() == square && cellToUpdate.getCanContain().contains("" + cellContent)) {
-                                ArrayList<String> updated = cellToUpdate.getCanContain();
-                                updated.remove(updated.indexOf("" + cellContent));
-                                cellToUpdate.setCanContain(updated);
-                            }
-                        }
-                    }
-                }
-            }
+            updateContent();
         }
     }
 
@@ -255,6 +253,85 @@ public class SudokuSolver {
         }
     }
 
+    public void alternativesCheck() {
+
+        boolean solved = false;
+        int alternativesCounter = 0;
+        for (Cell cell : board) {
+            if (cell.getContains() == 0) {
+
+
+                String content = cell.getCanContain().get(0);
+                String boardContent = saveContent(board);
+                cell.setContains(Integer.parseInt(content));
+                loopedCheck(15);
+                System.out.println("noDuplicates: " + noDuplicates() + ", !isSolved:" + !isSolved());
+                printOut();
+                if (noDuplicates() && !isSolved()) {
+                    solved = true;
+                } else {
+                    for (Cell cellToClear : board) {
+                        cellToClear.getCanContain().clear();
+                    }
+                    addValues(boardContent);
+                    createBasicSuggestions();
+                    loopedCheck(3);
+                    alternativesCounter++;
+                    System.out.println(alternativesCounter);
+                    cell.getCanContain().remove(0);
+                }
+
+
+                if (solved) break;
+
+            }
+        }
+
+    }
+
+    public boolean noDuplicates(){
+        for (int i = 0; i < 9; i++) {
+            for(Cell cell : rows.get(i)){
+                for(Cell cellToCompare : rows.get(i)){
+                    if (!cell.equals(cellToCompare) && cell.getContains() == cellToCompare.getContains()){
+                        return false;
+                    }
+                }
+            }
+            for(Cell cell : columns.get(i)){
+                for(Cell cellToCompare : columns.get(i)){
+                    if (!cell.equals(cellToCompare) && cell.getContains() == cellToCompare.getContains()){
+                        return false;
+                    }
+                }
+            }
+            for(Cell cell : squares.get(i)){
+                for(Cell cellToCompare : squares.get(i)){
+                    if (!cell.equals(cellToCompare) && cell.getContains() == cellToCompare.getContains()){
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
+    public String saveContent(ArrayList<Cell> board){
+        String out = "";
+        for (int i = 0; i < 9; i++) {
+            for (int k = 0; k < 9; k++) {
+
+                for (Cell cell : board) {
+                    if (cell.getRow() == i && cell.getColumn() == k) {
+                        out = out + cell.getContains();
+                    }
+                }
+            }
+
+        }
+        return out;
+    }
+
     public void updateContent(){
         for (Cell cell : board){
             if(cell.getContains() == 0 && cell.getCanContain().size() == 1){
@@ -280,13 +357,15 @@ public class SudokuSolver {
         for (int i = 0; i < 9; i++) {
             for (int k = 0; k < 9; k++) {
 
-                for (Cell j : board) {
-                    if (j.getRow() == i && j.getColumn() == k) {
-                        out = out + j.getContains();
+                for (Cell cell : board) {
+                    if (cell.getRow() == i && cell.getColumn() == k) {
+                        out = out + cell.getContains();
+                        if (k == 2 || k == 5 ){out = out + " ";}//TODO delete it
                     }
                 }
             }
             out = out + "\n";
+            if (i == 2 || i == 5 ){out = out + "\n";}//TODO delete it
 
         }
         System.out.println(out);

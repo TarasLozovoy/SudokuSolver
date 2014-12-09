@@ -18,6 +18,8 @@ public class Cell {
         this.column = column;
         this.square = square;
     }
+    public Cell() {
+    }
 
     //setters
     public void setRow(int row) {
@@ -69,7 +71,7 @@ public class Cell {
     public String toString() {
 
             Cell cell = this;
-            return (cell.getColumn() + " " + cell.getRow() + " " + cell.getSquare() + " contains " + cell.getContains() +
+            return ("rcs: " + cell.getRow() + " " + cell.getColumn() + " " + cell.getSquare() + " contains " + cell.getContains() +
              (contains == 0 ? getCanContain() : "")  + "\n");
 
     }
