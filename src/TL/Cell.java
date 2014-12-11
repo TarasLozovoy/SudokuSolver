@@ -1,12 +1,13 @@
 package TL;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class Cell {
+public class Cell implements Serializable{
     private int row;
     private int column;
     private int square;
