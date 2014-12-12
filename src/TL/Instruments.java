@@ -90,11 +90,11 @@ public class Instruments {
     public static void loopedCheck(int number, ArrayList<Cell> board, ArrayList<ArrayList<Cell>> rows, ArrayList<ArrayList<Cell>> columns, ArrayList<ArrayList<Cell>>squares){
         for(int i = 0; i < number; i++){
             BasicChecker.checkBoard(rows, columns, squares);
-            for (int j = 0; j < 9; j++) {
-                OneInAStructureChecker.checkOneInARow(j, board);
-                OneInAStructureChecker.checkOneInAColumn(j, board);
-                OneInAStructureChecker.checkOneInASquare(j, board);
-            }
+//            for (int j = 0; j < 9; j++) {
+//                OneInAStructureChecker.checkOneInARow(j, board);
+//                OneInAStructureChecker.checkOneInAColumn(j, board);
+//                OneInAStructureChecker.checkOneInASquare(j, board);
+//            }
             updateContent(board);
         }
     }
@@ -136,6 +136,7 @@ public class Instruments {
             if (i == 2 || i == 5 ){out = out + "\n";}//TODO delete it
 
         }
+        System.out.println("Solwed!");
         System.out.println(out);
     }
 }

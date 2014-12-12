@@ -1,7 +1,7 @@
 package TL;
 
+import TL.Checkers.AlternativesChecker;
 import java.util.ArrayList;
-import TL.Checkers.*;
 
 public class SudokuSolver {
 
@@ -21,19 +21,28 @@ public class SudokuSolver {
 
         int counter = 0;
         while (Instruments.isSolved(board)) {
-            Instruments.loopedCheck(1, board,rows,columns,squares);
-            Instruments.updateContent(board);
+            Instruments.loopedCheck(1, board, rows, columns, squares);
             counter++;
-            //System.out.println(board);
-
-          /*  if (counter == 50){
+            System.out.println(counter);
+            if (counter == 50){
+                String backup = AlternativesChecker.saveContent(board);
+                int recursionCounter = 1;
                 while (Instruments.isSolved(board)){
-                    AlternativesChecker.alternativesCheck(board,rows,columns,squares);
+
+                    AlternativesChecker.alternativesCheck(recursionCounter, board, rows, columns, squares);
+                    counter++;
+                    System.out.println(counter);
+                    if (!Instruments.isSolved(board)) break;
+                    recursionCounter++;
                 }
-            }*/
+                if (counter > 1000){
+                    System.out.println("It's too hard! =(");
+                    break;
+                }
+            }
         }
 
-        Instruments.printOut(board);
+        if (!Instruments.isSolved(board)) Instruments.printOut(board);
     }
 
 

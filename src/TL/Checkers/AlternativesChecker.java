@@ -5,39 +5,44 @@ import TL.Cell;
 import TL.Instruments;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AlternativesChecker {
-    public static void alternativesCheck(ArrayList<Cell> board,ArrayList<ArrayList<Cell>> rows, ArrayList<ArrayList<Cell>> columns, ArrayList<ArrayList<Cell>>squares) {
+    private static ArrayList<String> boardContent = new ArrayList<String>(Arrays.asList("","","","","","","","","",""));
 
-        boolean solved = false;
-        int alternativesCounter = 0;
-        for (Cell cell : board) {
-            if (cell.getContains() == 0) {
+    public static void alternativesCheck(int recursion, ArrayList<Cell> board,ArrayList<ArrayList<Cell>> rows, ArrayList<ArrayList<Cell>> columns, ArrayList<ArrayList<Cell>>squares) {
 
 
-                String content = cell.getCanContain().get(0);
-                String boardContent = saveContent(board);
-                cell.setContains(Integer.parseInt(content));
-                Instruments.loopedCheck(15,board,rows,columns,squares);
-                System.out.println("noDuplicates: " + noDuplicates(rows,columns,squares) + ", !isSolved:" + !Instruments.isSolved(board));
-                Instruments.printOut(board);
-                if (noDuplicates(rows, columns, squares) && !Instruments.isSolved(board)) {
-                    solved = true;
-                } else {
-                    for (Cell cellToClear : board) {
-                        cellToClear.getCanContain().clear();
+        if (recursion == 0) return;
+        recursion--;
+
+        for (int i = 0; i < 9; i++) {
+            boolean solved = false;
+            for (Cell cell : board) {
+                if (cell.getContains() == 0 && cell.getCanContain().size() > i) {
+
+                    //System.out.println(cell + " check " + cell.getCanContain().get(i) + " iteration: " + i);
+                    String content = cell.getCanContain().get(i);
+                    boardContent.set(recursion, saveContent(board));
+                    cell.setContains(Integer.parseInt(content));
+                    alternativesCheck(recursion, board, rows, columns, squares);
+                    Instruments.loopedCheck(15, board, rows, columns, squares);
+
+                    if (noDuplicates(rows, columns, squares) && !Instruments.isSolved(board)) {
+                        solved = true;
+                    } else {
+                        for (Cell cellToClear : board) {
+                            cellToClear.getCanContain().clear();
+                        }
+                        Instruments.addValues(boardContent.get(recursion), board);
+                        Instruments.createBasicSuggestions(board);
+                        Instruments.loopedCheck(3, board, rows, columns, squares);
                     }
-                    Instruments.addValues(boardContent, board);
-                    Instruments.createBasicSuggestions(board);
-                    Instruments.loopedCheck(3,board,rows,columns,squares);
-                    alternativesCounter++;
-                    System.out.println(alternativesCounter);
-                    cell.getCanContain().remove(0);
+
+
+                    if (solved) break;
+
                 }
-
-
-                if (solved) break;
-
             }
         }
 
